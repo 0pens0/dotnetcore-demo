@@ -1,58 +1,69 @@
 
+# Deploy to Azure Kubernetes Service
+# Build and push image to Azure Container Registry; Deploy to Azure Kubernetes Service
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+- main
+
+resources:
+- repo: self
+
+variables:
+
+  # Container registry service connection established during pipeline creation
+  dockerRegistryServiceConnection: 'd09d49e0-53b4-4a86-9522-072515419b6b'
+  imageRepository: 'pensnodehttp'
+  containerRegistry: 'opensoacr.azurecr.io'
+  dockerfilePath: '**/Dockerfile'
+  tag: '$(Build.BuildId)'
+  imagePullSecret: 'opensoacr0a1e-auth'
+
+  # Agent VM image name
+  vmImageName: 'ubuntu-latest'
+  
 
 stages:
-  - stage: Build
-    jobs:
-      - job: compile
-        steps:
-          # - task: GitVersion@5
-          #   displayName: 'GitVersion'
-          #   inputs:
-          #     runtime: core
-          # - script: echo %Action%%BuildVersion%
-          #   displayName: 'Set build version'
-          #   env:
-          #     Action: '##vso[build.updatebuildnumber]'
-          #     BuildVersion: $(GitVersion.NuGetVersionV2)
-          - script: ./build.sh Publish --skip
-          - script: ./build.sh Pack --skip
-          - task: PublishPipelineArtifact@0
+- stage: Build
+  displayName: Build stage
+  jobs:  
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: $(vmImageName)
+    steps:        
+    - upload: manifests
+      artifact: manifests
+
+- stage: Deploy
+  displayName: Deploy stage
+  dependsOn: Build
+
+  jobs:
+  - deployment: Deploy
+    displayName: Deploy
+    pool:
+      vmImage: $(vmImageName)
+    environment: 'dev-azure-tbs.devops'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: KubernetesManifest@0
+            displayName: Create imagePullSecret
             inputs:
-              targetPath: $(Build.ArtifactStagingDirectory)
-              artifactName: artifact
-          - task: PublishPipelineArtifact@0
+              action: createSecret
+              secretName: $(imagePullSecret)
+              dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
+              
+          - task: KubernetesManifest@0
+            displayName: Deploy to Kubernetes cluster
             inputs:
-              targetPath: $(System.DefaultWorkingDirectory)
-              artifactName: build
-  - stage: Dev
-    jobs:
-      - deployment: Dev
-        environment: Dev
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - download: none
-                - task: DownloadPipelineArtifact@2
-                  inputs:
-                    artifact: build
-                    targetPath: '$(System.DefaultWorkingDirectory)'
-                - task: DownloadPipelineArtifact@2
-                  inputs:
-                    artifact: artifact
-                    targetPath: '$(Build.ArtifactStagingDirectory)' 
-                - script: chmod +x build.sh
-                - script: ./build.sh CfLogin --skip
-                  env:
-                    CFUSERNAME: $(CfUsername)
-                    CFPASSWORD: $(CfPassword)
-                    CFORG: $(CfOrg)
-                    CFSPACE: $(CfSpace)
-                    CFAPI: $(CfApi)
-                - script: ./build.sh Deploy --skip
-                  env:
-                    CFUSERNAME: $(CfUsername)
-                    CFPASSWORD: $(CfPassword)
-                    CFORG: $(CfOrg)
-                    CFSPACE: $(CfSpace)
-                    CFAPI: $(CfApi)
+              action: deploy
+              manifests: |
+                $(Pipeline.Workspace)/manifests/deployment.yml
+                $(Pipeline.Workspace)/manifests/service.yml
+              imagePullSecrets: |
+                $(imagePullSecret)
+              containers: |
+                $(containerRegistry)/$(imageRepository):$(tag)
