@@ -13,10 +13,6 @@ variables:
 
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: 'd09d49e0-53b4-4a86-9522-072515419b6b'
-  imageRepository: 'pensnodehttp'
-  containerRegistry: 'opensoacr.azurecr.io'
-  dockerfilePath: '**/Dockerfile'
-  tag: '$(Build.BuildId)'
   imagePullSecret: 'opensoacr0a1e-auth'
 
   # Agent VM image name
@@ -24,47 +20,57 @@ variables:
   
 
 stages:
-- stage: Build
+- stage: CopyFilesToAgent
   displayName: Build stage
   jobs:  
   - job: Build
-    displayName: Build
+    displayName: CopyFilesToAgent
     pool:
       vmImage: $(vmImageName)
     steps:        
     - upload: manifests
       artifact: manifests
+# Delay
+# Delay further execution of a workflow by a fixed time
+#jobs:
+  - job: WaitForTBS
+    pool: Server
+    steps:
+      - task: Delay@1
+        inputs:
+          delayForMinutes: '1' 
 
-- stage: Deploy
+- stage: DeployToK8S
   displayName: Deploy stage
-  dependsOn: Build
+  dependsOn: CopyFilesToAgent
 
   jobs:
   - deployment: Deploy
-    displayName: Deploy
+    displayName: DeployToK8S
     pool:
       vmImage: $(vmImageName)
-    environment: 'Kubernetes-Deployment.builds'
+    environment: 'Deploy-to-Dev-aws-tbs.devops'
     strategy:
       runOnce:
         deploy:
           steps:
           - task: KubernetesManifest@0
+            inputs:
+              action: 'delete'
+              kubernetesServiceConnection: 'dev-aws-tbs'
+              namespace: 'devops'
+              arguments: 'deploy,secret --all'
+          - task: KubernetesManifest@0
             displayName: Create imagePullSecret
             inputs:
+              namespace: 'devops'
               action: createSecret
               secretName: $(imagePullSecret)
               dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
-          
           - task: KubernetesManifest@0
             displayName: Deploy to Kubernetes cluster
             inputs:
-              action: deploy
-              manifests: |
-                $(Pipeline.Workspace)/manifests/tbs-image.yaml
-          - task: KubernetesManifest@0
-            displayName: Deploy to Kubernetes cluster
-            inputs:
+              namespace: 'devops'
               action: deploy
               manifests: |
                 $(Pipeline.Workspace)/manifests/deployment.yaml
@@ -72,4 +78,4 @@ stages:
               imagePullSecrets: |
                 $(imagePullSecret)
               containers: |
-                $(containerRegistry)/$(imageRepository):$(tag)
+                - task: KubernetesManifest@0
