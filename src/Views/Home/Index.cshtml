@@ -38,6 +38,11 @@
 					demonstrated in the particular page.</li>
 			</ol>
 		</div>
+			
+		<div class="col-md-6">
+			@await Html.PartialAsync("Tutorial", (AppEnv)ViewBag.AppEnv)
+			@* <partial name="Shared/Tutorial.cshtml" model="ViewBag.AppEnv"/> *@
+		</div>
 
 	</div>
 
