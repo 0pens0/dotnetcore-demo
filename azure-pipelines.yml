@@ -31,16 +31,6 @@ stages:
     - upload: manifests
       artifact: manifests
 
-  - job: CreateBuildImage
-    pool: Server
-    steps:
-    - task: KubernetesManifest@0
-      displayName: Deploy to Kubernetes cluster
-      inputs:
-        namespace: 'devops'
-        action: deploy
-        manifests: |
-          $(Pipeline.Workspace)/manifests/tbs-image.yaml
 # Delay
 # Delay further execution of a workflow by a fixed time
 #jobs:
@@ -65,6 +55,13 @@ stages:
       runOnce:
         deploy:
           steps:
+          - task: KubernetesManifest@0
+            displayName: Deploy to Kubernetes cluster
+            inputs:
+              namespace: 'devops'
+              action: deploy
+              manifests: |
+                $(Pipeline.Workspace)/manifests/tbs-image.yaml
           - task: KubernetesManifest@0
             inputs:
               action: 'delete'
