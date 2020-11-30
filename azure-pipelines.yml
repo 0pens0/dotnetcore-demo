@@ -44,7 +44,7 @@ stages:
     displayName: Deploy
     pool:
       vmImage: $(vmImageName)
-    environment: 'dev-aws-tbs.builds'
+    environment: 'Kubernetes-Deployment.builds'
     strategy:
       runOnce:
         deploy:
