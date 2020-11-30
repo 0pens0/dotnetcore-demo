@@ -44,7 +44,7 @@ stages:
     displayName: Deploy
     pool:
       vmImage: $(vmImageName)
-    environment: 'dev-azure-tbs.devops'
+    environment: 'dev-aws-tbs.builds'
     strategy:
       runOnce:
         deploy:
