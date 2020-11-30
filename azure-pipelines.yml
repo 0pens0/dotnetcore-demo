@@ -37,7 +37,7 @@ stages:
     steps:
       - task: Delay@1
         inputs:
-          delayForMinutes: '1' 
+          delayForMinutes: '2' 
 # CopyManifests
 - stage: DeployToK8S
   displayName: Deploy stage
