@@ -30,7 +30,15 @@ stages:
     steps:        
     - upload: manifests
       artifact: manifests
-
+# Delay
+# Delay further execution of a workflow by a fixed time
+#jobs:
+  - job: RunsOnServer
+    pool: Server
+    steps:
+      - task: Delay@1
+        inputs:
+          delayForMinutes: '1' 
 
 - stage: Deploy
   displayName: Deploy stage
@@ -46,9 +54,6 @@ stages:
       runOnce:
         deploy:
           steps:
-          - task: Delay@1
-            inputs:
-              delayForMinutes: '1'
           - task: KubernetesManifest@0
             inputs:
               action: 'delete'
