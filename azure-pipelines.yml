@@ -32,7 +32,7 @@ stages:
       artifact: manifests
     - task: Delay@1
       inputs:
-        delayForMinutes: '3'
+        delayForMinutes: '5'
 
 - stage: Deploy
   displayName: Deploy stage
