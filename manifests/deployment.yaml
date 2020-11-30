@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: dotnet 
-          image: opensoacr.azurecr.io/dotnet
+          image: opensoacr.azurecr.io/dotnet:latest
           ports:
           - containerPort: 80
