@@ -73,10 +73,3 @@ stages:
                 $(imagePullSecret)
               containers: |
                 - task: KubernetesManifest@0
-
-- task: KubernetesManifest@0
-  inputs:
-    action: 'delete'
-    kubernetesServiceConnection: 'dev-aws-tbs'
-    namespace: 'default'
-    arguments: 'pod --all'
