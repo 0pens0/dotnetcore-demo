@@ -64,6 +64,7 @@ stages:
           - task: KubernetesManifest@0
             displayName: Deploy to Kubernetes cluster
             inputs:
+              namespace: 'devops'
               action: deploy
               manifests: |
                 $(Pipeline.Workspace)/manifests/deployment.yaml
