@@ -62,7 +62,6 @@ stages:
               action: deploy
               manifests: |
                 $(Pipeline.Workspace)/manifests/image.yaml
-              
           - task: KubernetesManifest@0
             displayName: Deploy to Kubernetes cluster
             inputs:
