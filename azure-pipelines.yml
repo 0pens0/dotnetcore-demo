@@ -20,7 +20,7 @@ variables:
   
 
 stages:
-- stage: Build
+- stage: CopyFilesToAgent
   displayName: Build stage
   jobs:  
   - job: Build
@@ -33,14 +33,14 @@ stages:
 # Delay
 # Delay further execution of a workflow by a fixed time
 #jobs:
-  - job: RunsOnServer
+  - job: WaitForTBS
     pool: Server
     steps:
       - task: Delay@1
         inputs:
           delayForMinutes: '1' 
 
-- stage: Deploy
+- stage: DeployToK8S
   displayName: Deploy stage
   dependsOn: Build
 
@@ -59,7 +59,7 @@ stages:
               action: 'delete'
               kubernetesServiceConnection: 'dev-aws-tbs'
               namespace: 'devops'
-              arguments: 'pod,secret --all'
+              arguments: 'deploy,secret --all'
           - task: KubernetesManifest@0
             displayName: Create imagePullSecret
             inputs:
