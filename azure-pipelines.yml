@@ -24,7 +24,7 @@ stages:
   displayName: Build stage
   jobs:  
   - job: Build
-    displayName: Build
+    displayName: CopyFilesToAgent
     pool:
       vmImage: $(vmImageName)
     steps:        
@@ -46,7 +46,7 @@ stages:
 
   jobs:
   - deployment: Deploy
-    displayName: Deploy
+    displayName: DeployToK8S
     pool:
       vmImage: $(vmImageName)
     environment: 'Deploy-to-Dev-aws-tbs.devops'
