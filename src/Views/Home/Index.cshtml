@@ -14,34 +14,22 @@
 		<div class="col-md-6">
 			<p>The purpose of this application is to demonstrate some basic
 				capabilities of the Tanzu BUILD components, in particular
-				the Tanzu Build Service which is the core component
+				the <a href="https://tanzu.vmware.com/build-service">Tanzu Build Service</a> which is the core component
 				responsible for building the application workloads as containers.</p>
-			<h3>How to use this Application</h3>
+			<h3>Build containers from source code for Kubernetes</h3>
 			<p>
-				Each menu item above links to a page that helps demonstrate a set
-				of capabilities. Some of the features demonstrated use parts of 
-				<a href="https://steeltoe.io">project Steeltoe</a>
-				libraries which enhance DevOps experience when running on Tanzu Application 
-				Service.
+				VMware Tanzu Build Service automates container creation, management, and governance at enterprise scale.
 			</p>
-			<p>Each page has the same layout with the Accordion control and
-				3 groups:</p>
 			<ol>
-				<li><b>Application Environment Information</b> - This provides
-					information about the application environment when running inside
-					PCF. You can see the Application Name, Container and Services
-					information. This is useful to show things like load balancing,
-					self healing, service binding among other things.</li>
-				<li><b>Description</b> - We provide information on the current
-					page and additional resources.</li>
-				<li><b>Demonstration</b> - We list the things that can be
-					demonstrated in the particular page.</li>
+				<li><b>Build, maintain, and update portable OCI images</b> - Consistently create production-ready container 
+				images that run on Kubernetes and across clouds. Automate source-to-container workflows across all your development frameworks.</li>
+				<li><b>Boost security and reduce risk from CVE</b> - Tanzu Build Service uses the magic of Cloud Native Buildpacks to rebase app 
+				images when specialized contractual base images are updated in a registry. This means you can resolve certain common vulnerabilities 
+				and exposures (CVE) without a rebuild.</li>
+				<li><b>Follow a Kubernetes-native model</b> - Tanzu Build Service follows a Kubernetes-native declarative model and executes builds 
+				automatically against user-defined configuration. It includes <a href="https://tanzu.vmware.com/content/blog/introducing-kpack-a-kubernetes-native-container-build-service">kpack</a>, a set of open-source resource controllers for Kubernetes 
+				maintained by VMware Tanzu</li>
 			</ol>
-		</div>
-			
-		<div class="col-md-6">
-			@await Html.PartialAsync("Tutorial", (AppEnv)ViewBag.AppEnv)
-			@* <partial name="Shared/Tutorial.cshtml" model="ViewBag.AppEnv"/> *@
 		</div>
 
 	</div>
