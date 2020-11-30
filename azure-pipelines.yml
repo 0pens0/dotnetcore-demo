@@ -55,6 +55,14 @@ stages:
               action: createSecret
               secretName: $(imagePullSecret)
               dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
+
+          - task: KubernetesManifest@0
+            inputs:
+              action: 'delete'
+              kubernetesServiceConnection: 'dev-aws-tbs'
+              namespace: 'default'
+              arguments: '$(Pipeline.Workspace)/manifests/deployment.yaml'
+
           - task: KubernetesManifest@0
             displayName: Deploy to Kubernetes cluster
             inputs:
@@ -65,4 +73,4 @@ stages:
               imagePullSecrets: |
                 $(imagePullSecret)
               containers: |
-                $(containerRegistry)/$(imageRepository):$(tag)
+                - task: KubernetesManifest@0
