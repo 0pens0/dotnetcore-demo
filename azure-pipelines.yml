@@ -57,11 +57,15 @@ stages:
               dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
 
           - task: KubernetesManifest@0
+            displayName: Delete from Kubernetes cluster
             inputs:
-              action: 'delete'
-              kubernetesServiceConnection: 'dev-aws-tbs'
-              namespace: 'default'
-              arguments: '$(Pipeline.Workspace)/manifests/deployment.yaml'
+              action: delete
+              manifests: |
+                $(Pipeline.Workspace)/manifests/deployment.yaml
+              imagePullSecrets: |
+                $(imagePullSecret)
+              containers: |
+                - task: KubernetesManifest@0
 
           - task: KubernetesManifest@0
             displayName: Deploy to Kubernetes cluster
