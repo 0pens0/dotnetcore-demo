@@ -44,7 +44,7 @@ stages:
     displayName: Deploy
     pool:
       vmImage: $(vmImageName)
-    environment: 'Kubernetes-Deployment.builds'
+    environment: 'Deploy-to-Dev-aws-tbs.devops'
     strategy:
       runOnce:
         deploy:
@@ -53,9 +53,8 @@ stages:
             inputs:
               action: 'delete'
               kubernetesServiceConnection: 'dev-aws-tbs'
-              namespace: 'default'
+              namespace: 'devops'
               arguments: 'pod --all'
-
           - task: KubernetesManifest@0
             displayName: Create imagePullSecret
             inputs:
