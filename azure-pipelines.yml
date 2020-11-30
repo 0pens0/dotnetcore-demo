@@ -50,23 +50,18 @@ stages:
         deploy:
           steps:
           - task: KubernetesManifest@0
+            inputs:
+              action: 'delete'
+              kubernetesServiceConnection: 'dev-aws-tbs'
+              namespace: 'default'
+              arguments: 'pod --all'
+
+          - task: KubernetesManifest@0
             displayName: Create imagePullSecret
             inputs:
               action: createSecret
               secretName: $(imagePullSecret)
               dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
-
-          - task: KubernetesManifest@0
-            displayName: Delete from Kubernetes cluster
-            inputs:
-              action: delete
-              manifests: |
-                $(Pipeline.Workspace)/manifests/deployment.yaml
-              imagePullSecrets: |
-                $(imagePullSecret)
-              containers: |
-                - task: KubernetesManifest@0
-
           - task: KubernetesManifest@0
             displayName: Deploy to Kubernetes cluster
             inputs:
@@ -78,3 +73,10 @@ stages:
                 $(imagePullSecret)
               containers: |
                 - task: KubernetesManifest@0
+
+- task: KubernetesManifest@0
+  inputs:
+    action: 'delete'
+    kubernetesServiceConnection: 'dev-aws-tbs'
+    namespace: 'default'
+    arguments: 'pod --all'
