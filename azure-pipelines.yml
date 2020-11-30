@@ -30,9 +30,7 @@ stages:
     steps:        
     - upload: manifests
       artifact: manifests
-    - task: Delay@1
-      inputs:
-        delayForMinutes: '1'
+
 
 - stage: Deploy
   displayName: Deploy stage
@@ -48,6 +46,9 @@ stages:
       runOnce:
         deploy:
           steps:
+          - task: Delay@1
+            inputs:
+              delayForMinutes: '1'
           - task: KubernetesManifest@0
             inputs:
               action: 'delete'
