@@ -2,6 +2,7 @@ apiVersion: kpack.io/v1alpha1
 kind: Image
 metadata:
   name: dotnet
+  namespace: builds
 spec:
   build:
     resources: {}
