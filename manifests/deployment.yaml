@@ -16,4 +16,4 @@ spec:
         - name: dotnet 
           image: opensoacr.azurecr.io/dotnet:latest
           ports:
-          - containerPort: 80
+          - containerPort: 8080
