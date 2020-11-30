@@ -13,10 +13,6 @@ variables:
 
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: 'd09d49e0-53b4-4a86-9522-072515419b6b'
-  imageRepository: 'pensnodehttp'
-  containerRegistry: 'opensoacr.azurecr.io'
-  dockerfilePath: '**/Dockerfile'
-  tag: '$(Build.BuildId)'
   imagePullSecret: 'opensoacr0a1e-auth'
 
   # Agent VM image name
