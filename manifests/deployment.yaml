@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: dotnet 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dotnet
+  template:
+    metadata:
+      labels:
+        app: dotnet 
+    spec:
+      containers:
+        - name: dotnet 
+          image: opensoacr.azurecr.io/dotnet
+          ports:
+          - containerPort: 80
