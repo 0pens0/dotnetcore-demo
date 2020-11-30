@@ -42,7 +42,7 @@ stages:
 
 - stage: DeployToK8S
   displayName: Deploy stage
-  dependsOn: Build
+  dependsOn: CopyFilesToAgent
 
   jobs:
   - deployment: Deploy
