@@ -30,6 +30,9 @@ stages:
     steps:        
     - upload: manifests
       artifact: manifests
+    - task: Delay@1
+      inputs:
+        delayForMinutes: '3'
 
 - stage: Deploy
   displayName: Deploy stage
