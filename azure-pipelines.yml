@@ -32,15 +32,13 @@ stages:
       artifact: manifests
 
 # Delay
-# Delay further execution of a workflow by a fixed time
-#jobs:
   - job: WaitForTBS
     pool: Server
     steps:
       - task: Delay@1
         inputs:
           delayForMinutes: '1' 
-
+# CopyManifests
 - stage: DeployToK8S
   displayName: Deploy stage
   dependsOn: CopyFilesToAgent
